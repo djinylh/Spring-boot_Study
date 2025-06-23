@@ -21,6 +21,7 @@ public class BoardController {
 
     @PostMapping("/board")
     public String postBoard(){
+
         return "Post Board!";
     }
 
