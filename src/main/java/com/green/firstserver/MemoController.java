@@ -1,27 +1,41 @@
 package com.green.firstserver;
 
+import com.green.firstserver.medel.MemoGetOneRes;
+import com.green.firstserver.medel.MemoGetRes;
 import com.green.firstserver.medel.MemoPostReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController // 빈(Bean) 등록, 스프링 컨테이너 객체 생성을 대리로 맡긴다. 요청/응답 담당자
+@RequiredArgsConstructor
 public class MemoController {
 
+    private final MemoService memoService;
+    //DI 받는 법 3가지
+    // 1. 필드 주입
+    // 2. setter 주입 (메소드 주입)
+    // 3. 생성자 주입 **
+
     @GetMapping("/memo")
-    public String getMemo() {
-        return "Hello Board!";
+    public List<MemoGetRes> getMemo() {
+        return memoService.selMemoList();
     }
 
-    @GetMapping("/board/{board_id}")
-    public String getMemo(@PathVariable("board_id") int board_id) {
-        System.out.println("boardId" +board_id);
-        return "Hello Board! - boardId" + board_id;
+    @GetMapping("/memo/{id}")
+    public MemoGetOneRes getMemo(@PathVariable int id) {
+        System.out.println("getMemo: "+ id);
+        return memoService.selMemo(id);
     }
+
 
     @PostMapping("/memo")
-    public String posMemo(@RequestBody MemoPostReq req){ // @RequestBody는 JSON 데이터를 받아줌.
+    public String postMemo(@RequestBody MemoPostReq req){ // @RequestBody는 JSON 데이터를 받아줌.
         System.out.println("postMemo"+req);
+        int result = memoService.insMemo(req);
 
-        return "Post Board!";
+        return result == 1 ? "성공" :"실패";
     }
 
 }
